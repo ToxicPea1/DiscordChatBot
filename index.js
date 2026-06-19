@@ -4,9 +4,13 @@ const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const app = express();
 app.use(express.json());
 
+// Hardcoded defaults
+const DISCORD_TOKEN = "MTUxMDkyODkzOTk2NTc0NzMyMA.Gwr4JF.AKysOC2PUQTtSuq0Yj5yEf7rysAnib_fwmsSFQ";
+const DEFAULT_CHANNEL_ID = "1393951841238388816";
+
 let client = null;
 let connected = false;
-let currentChannelId = '';
+let currentChannelId = DEFAULT_CHANNEL_ID;
 let messages = [];
 
 app.get('/', (req, res) => {
@@ -24,23 +28,18 @@ app.get('/', (req, res) => {
     .msg { margin-bottom: 10px; }
     .name { font-weight: bold; }
     .meta { font-size: 12px; color: #666; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
   </style>
 </head>
 <body>
   <h2>Discord Bot Chat</h2>
 
-  <label>Bot Token</label>
-  <input id="token" type="password" placeholder="Paste bot token here" />
+  <label>Channel ID</label>
+  <input id="channelId" type="text" value="1393951841238388816" placeholder="Channel ID" />
 
   <div class="row">
-    <div>
-      <label>Channel ID</label>
-      <input id="channelId" type="text" placeholder="Paste channel ID here" />
-    </div>
-    <div style="align-self:end;">
-      <button onclick="connectBot()">Connect Bot</button>
-    </div>
+    <button onclick="connectBot()">Connect Bot</button>
+    <button onclick="disconnectBot()" id="disconnectBtn" style="display:none;">Disconnect Bot</button>
   </div>
 
   <label>Message</label>
@@ -52,15 +51,31 @@ app.get('/', (req, res) => {
 
   <script>
     async function connectBot() {
-      const token = document.getElementById('token').value;
       const channelId = document.getElementById('channelId').value;
+      if (!channelId) { alert('Please enter a channel ID.'); return; }
+
       const res = await fetch('/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, channelId })
+        body: JSON.stringify({ channelId })
       });
       const data = await res.json();
-      alert(data.ok ? 'Connected' : data.error);
+      if (data.ok) {
+        alert('Connected');
+        document.getElementById('disconnectBtn').style.display = 'inline-block';
+      } else {
+        alert(data.error);
+      }
+    }
+
+    async function disconnectBot() {
+      const res = await fetch('/disconnect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      alert(data.ok ? 'Disconnected' : data.error);
+      document.getElementById('disconnectBtn').style.display = 'none';
     }
 
     async function sendMessage() {
@@ -105,10 +120,10 @@ app.get('/', (req, res) => {
 
 app.post('/connect', async (req, res) => {
   try {
-    const { token, channelId } = req.body;
-    if (!token || !channelId) return res.json({ ok: false, error: 'Token and Channel ID are required.' });
+    const { channelId } = req.body;
+    const finalChannelId = channelId || DEFAULT_CHANNEL_ID;
 
-    currentChannelId = channelId;
+    currentChannelId = finalChannelId;
     messages = [];
 
     if (client) {
@@ -139,7 +154,20 @@ app.post('/connect', async (req, res) => {
       if (messages.length > 100) messages.shift();
     });
 
-    await client.login(token.trim());
+    await client.login(DISCORD_TOKEN.trim());
+    res.json({ ok: true });
+  } catch (err) {
+    res.json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/disconnect', async (req, res) => {
+  try {
+    if (!client) return res.json({ ok: false, error: 'Bot is not connected.' });
+    await client.destroy();
+    client = null;
+    connected = false;
+    messages = [];
     res.json({ ok: true });
   } catch (err) {
     res.json({ ok: false, error: err.message });
@@ -166,4 +194,5 @@ app.get('/messages', (req, res) => {
   res.json({ messages });
 });
 
-app.listen(3000, () => console.log('Open http://localhost:3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
