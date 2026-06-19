@@ -16,7 +16,6 @@ let client = null;
 let connected = false;
 let currentChannelId = DEFAULT_CHANNEL_ID;
 let messages = [];
-let channelMembers = [];
 
 app.get('/', (req, res) => {
   res.send(`
@@ -38,108 +37,18 @@ app.get('/', (req, res) => {
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      display: flex;
-      overflow-x: hidden;
     }
-    .main-container {
-      display: flex;
-      width: 100%;
-      max-width: 1400px;
+    .container {
+      max-width: 1200px;
       margin: 0 auto;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 280px;
-      background: #2b2d31;
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid #1e1f22;
-    }
-
-    .sidebar-header {
-      padding: 16px;
-      font-weight: 600;
-      font-size: 16px;
-      color: #f2f3f5;
-      border-bottom: 1px solid #1e1f22;
-    }
-
-    .sidebar-section {
-      padding: 12px 16px 4px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #949ba4;
-      text-transform: uppercase;
-    }
-
-    .member-list {
-      overflow-y: auto;
-      padding: 4px 0;
-    }
-
-    .member-item {
-      display: flex;
-      align-items: center;
-      padding: 6px 16px;
-      cursor: pointer;
-    }
-    .member-item:hover {
-      background: #35373c;
-    }
-
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #5865f2;
-      margin-right: 10px;
-      position: relative;
-    }
-
-    .status-indicator {
-      position: absolute;
-      bottom: -2px;
-      right: -2px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 3px solid #2b2d31;
-    }
-
-    .status-online {
-      background: #3ba55c;
-    }
-    .status-idle {
-      background: #faa61a;
-    }
-    .status-dnd {
-      background: #f23f43;
-    }
-    .status-offline {
-      background: #747f8d;
-    }
-
-    .member-name {
-      font-size: 14px;
-      color: #dbdee1;
-    }
-    .member-name.bot {
-      color: #7289da;
-    }
-
-    /* Chat area */
-    .chat-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      padding: 20px;
     }
 
     .input-group {
       background: #2b2d31;
       padding: 16px;
       border-radius: 8px;
-      margin: 20px;
+      margin-bottom: 20px;
     }
 
     label {
@@ -194,10 +103,9 @@ app.get('/', (req, res) => {
       background: #2b2d31;
       border-radius: 8px;
       overflow: hidden;
-      margin: 0 20px 20px;
-      flex: 1;
       display: flex;
       flex-direction: column;
+      height: 80vh;
     }
 
     .chat-header {
@@ -209,7 +117,7 @@ app.get('/', (req, res) => {
     }
 
     #chat {
-      height: 420px;
+      flex: 1;
       overflow-y: auto;
       padding: 16px;
       background: #313338;
@@ -249,7 +157,6 @@ app.get('/', (req, res) => {
       margin-top: 4px;
     }
 
-    /* Message input (smaller like Discord) */
     .message-input {
       padding: 12px;
       background: #2b2d31;
@@ -414,38 +321,29 @@ app.get('/', (req, res) => {
   </style>
 </head>
 <body>
-  <div class="main-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-header">Members</div>
-      <div id="memberList"></div>
-    </div>
+  <div class="container">
+    <div class="input-group">
+      <label>Channel ID</label>
+      <input id="channelId" type="text" value="1393951841238388816" placeholder="Channel ID" />
 
-    <!-- Chat area -->
-    <div class="chat-area">
-      <div class="input-group">
-        <label>Channel ID</label>
-        <input id="channelId" type="text" value="1393951841238388816" placeholder="Channel ID" />
-
-        <div class="row">
-          <button onclick="connectBot()">Connect Bot</button>
-          <button onclick="disconnectBot()" id="disconnectBtn" style="display:none; background: #4e5058;">Disconnect Bot</button>
-        </div>
-
-        <div class="status" id="status"></div>
+      <div class="row">
+        <button onclick="startBot()">Start Bot</button>
+        <button onclick="stopBot()" id="stopBtn" style="display:none; background: #4e5058;">Stop Bot</button>
       </div>
 
-      <div class="chat-container">
-        <div class="chat-header">Channel Messages</div>
-        <div id="chat"></div>
-        <div class="message-input">
-          <button class="gif-btn" onclick="openGifModal()">🎬 GIF</button>
-          <div class="message-input-wrapper">
-            <input id="message" type="text" placeholder="Message @channel" oninput="handleInput()" onkeydown="handleKeyDown(event)" />
-            <div id="suggestions" class="suggestions" style="display:none;"></div>
-          </div>
-          <button onclick="sendMessage()">Send</button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-header">Channel Messages</div>
+      <div id="chat"></div>
+      <div class="message-input">
+        <button class="gif-btn" onclick="openGifModal()">🎬 GIF</button>
+        <div class="message-input-wrapper">
+          <input id="message" type="text" placeholder="Message @channel" oninput="handleInput()" onkeydown="handleKeyDown(event)" />
+          <div id="suggestions" class="suggestions" style="display:none;"></div>
         </div>
+        <button onclick="sendMessage()">Send</button>
       </div>
     </div>
   </div>
@@ -468,6 +366,7 @@ app.get('/', (req, res) => {
     let userIndex = -1;
     let currentSuggestions = [];
     let currentGifs = [];
+    let channelMembers = [];
 
     const featuredGifs = [
       { url: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R6bW55Z3R5cDZxejJxejJxejJxejJxejJxejJxejJxejJx/cmpvPsBtK5JHvAZCco/giphy.gif', title: 'Hello' },
@@ -478,38 +377,36 @@ app.get('/', (req, res) => {
       { url: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R6bW55Z3R5cDZxejJxejJxejJxejJxejJxejJxejJxejJxejJxejJx/3o6Zt6ML6BklcajjsA/giphy.gif', title: 'Love' }
     ];
 
-    async function connectBot() {
+    async function startBot() {
       const channelId = document.getElementById('channelId').value;
       if (!channelId) { alert('Please enter a channel ID.'); return; }
 
-      const res = await fetch('/connect', {
+      const res = await fetch('/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ channelId })
       });
       const data = await res.json();
       if (data.ok) {
-        document.getElementById('status').textContent = 'Connected';
+        document.getElementById('status').textContent = 'Bot Running';
         document.getElementById('status').classList.add('connected');
-        document.getElementById('disconnectBtn').style.display = 'inline-block';
+        document.getElementById('stopBtn').style.display = 'inline-block';
         loadMessages();
-        loadMembers();
-        loadFeaturedGifs();
       } else {
         alert(data.error);
       }
     }
 
-    async function disconnectBot() {
-      const res = await fetch('/disconnect', {
+    async function stopBot() {
+      const res = await fetch('/stop', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await res.json();
       if (data.ok) {
-        document.getElementById('status').textContent = 'Disconnected';
+        document.getElementById('status').textContent = 'Bot Stopped';
         document.getElementById('status').classList.remove('connected');
-        document.getElementById('disconnectBtn').style.display = 'none';
+        document.getElementById('stopBtn').style.display = 'none';
       } else {
         alert(data.error);
       }
@@ -554,57 +451,6 @@ app.get('/', (req, res) => {
         \`;
       }).join('');
       chat.scrollTop = chat.scrollHeight;
-    }
-
-    function loadMembers() {
-      const list = document.getElementById('memberList');
-      if (!channelMembers || channelMembers.length === 0) {
-        list.innerHTML = '<div style="padding:16px;color:#949ba4;">No members loaded</div>';
-        return;
-      }
-
-      const online = channelMembers.filter(m => m.status !== 'offline');
-      const offline = channelMembers.filter(m => m.status === 'offline');
-
-      let html = '';
-
-      if (online.length > 0) {
-        html += '<div class="sidebar-section">Online — ' + online.length + '</div>';
-        html += '<div class="member-list">';
-        for (const m of online) {
-          html += createMemberHTML(m);
-        }
-        html += '</div>';
-      }
-
-      if (offline.length > 0) {
-        html += '<div class="sidebar-section">Offline — ' + offline.length + '</div>';
-        html += '<div class="member-list">';
-        for (const m of offline) {
-          html += createMemberHTML(m);
-        }
-        html += '</div>';
-      }
-
-      list.innerHTML = html;
-    }
-
-    function createMemberHTML(m) {
-      const statusClass = m.status === 'online' ? 'status-online'
-        : m.status === 'idle' ? 'status-idle'
-        : m.status === 'dnd' ? 'status-dnd'
-        : 'status-offline';
-
-      const botClass = m.bot ? 'bot' : '';
-
-      return \`
-        <div class="member-item">
-          <div class="avatar">
-            <div class="status-indicator \${statusClass}"></div>
-          </div>
-          <div class="member-name \${botClass}">\${escapeHtml(m.username)}</div>
-        </div>
-      \`;
     }
 
     function openGifModal() {
@@ -798,7 +644,7 @@ app.get('/', (req, res) => {
   `);
 });
 
-app.post('/connect', async (req, res) => {
+app.post('/start', async (req, res) => {
   try {
     if (!DISCORD_TOKEN) {
       return res.json({ ok: false, error: 'DISCORD_TOKEN is not set in Railway Variables.' });
@@ -809,7 +655,6 @@ app.post('/connect', async (req, res) => {
 
     currentChannelId = finalChannelId;
     messages = [];
-    channelMembers = [];
 
     if (client) {
       try { await client.destroy(); } catch {}
@@ -860,35 +705,19 @@ app.post('/connect', async (req, res) => {
 
     if (messages.length > 100) messages = messages.slice(0, 100);
 
-    try {
-      const members = await channel.members.fetch();
-      channelMembers = members.map((m, id) => {
-        const status = m.presence?.status || 'offline';
-        return {
-          id: id,
-          username: m.user.username,
-          bot: m.user.bot,
-          status: status
-        };
-      });
-    } catch (err) {
-      console.error('Could not fetch members:', err.message);
-    }
-
     res.json({ ok: true });
   } catch (err) {
     res.json({ ok: false, error: err.message });
   }
 });
 
-app.post('/disconnect', async (req, res) => {
+app.post('/stop', async (req, res) => {
   try {
-    if (!client) return res.json({ ok: false, error: 'Bot is not connected.' });
+    if (!client) return res.json({ ok: false, error: 'Bot is not running.' });
     await client.destroy();
     client = null;
     connected = false;
     messages = [];
-    channelMembers = [];
     res.json({ ok: true });
   } catch (err) {
     res.json({ ok: false, error: err.message });
@@ -897,7 +726,7 @@ app.post('/disconnect', async (req, res) => {
 
 app.post('/send', async (req, res) => {
   try {
-    if (!client || !connected) return res.json({ ok: false, error: 'Bot is not connected.' });
+    if (!client || !connected) return res.json({ ok: false, error: 'Bot is not running.' });
     const { message } = req.body;
     if (!message) return res.json({ ok: false, error: 'Message is empty.' });
 
