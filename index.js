@@ -404,24 +404,7 @@ app.post('/send', async (req, res) => {
 app.get('/messages', (req, res) => {
   res.json({ messages });
 });
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'spiel') {
-    const spiele = [
-      '🎮 Minecraft',
-      '🏭 Satisfactory',
-      '🚗 GTA Online',
-      '🤖 R.E.P.O.',
-      '👾 Lethal Company',
-      '🥊 Stick Fight'
-    ];
-
-    const spiel = spiele[Math.floor(Math.random() * spiele.length)];
-
-    await interaction.reply(`Heute spielt ihr: **${spiel}**`);
-  }
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
