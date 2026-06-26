@@ -149,6 +149,11 @@ app.get('/', (req, res) => {
       color: #949ba4;
       margin-top: 4px;
     }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
 
     
     .message-input {
@@ -271,6 +276,7 @@ app.get('/', (req, res) => {
       const wasAtBottom = chat.scrollHeight - chat.scrollTop <= chat.clientHeight + 50;
       
       chat.innerHTML = data.messages.map(m => \`
+        <img class="avatar" src="${escapeHtml(m.avatar)}" />
         <div class="msg">
           <div class="name">\${escapeHtml(m.author)}</div>
           <div class="message-content">\${escapeHtml(m.content)}</div>
@@ -367,7 +373,8 @@ app.post('/start', async (req, res) => {
         author: msg.author.bot ? `[Bot] ${msg.author.username}` : msg.author.username,
         content: msg.content || '[no text]',
         time: new Date(msg.createdTimestamp).toLocaleString(),
-        messageid: msg.author.id
+        messageid: msg.author.id,
+        avatar: msg.author.displayAvatarURL({ dynamic: true, size: 64 })
       });
     }
 
