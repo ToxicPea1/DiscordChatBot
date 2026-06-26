@@ -21,271 +21,265 @@ app.get('/', (req, res) => {
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>Discord Chat Bot</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      touch-action: manipulation;
-    }
-    body {
-      font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #313338;
-      color: #dbdee1;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Discord Clone Panel</title>
 
-    .input-group {
-      background: #2b2d31;
-      padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #313338;
+  color: #dbdee1;
+}
 
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #b5b6b8;
-      margin-bottom: 6px;
-    }
+/* TOP BAR */
+.topbar {
+  height: 48px;
+  background: #2b2d31;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-weight: bold;
+  color: #f2f3f5;
+  border-bottom: 1px solid #1e1f22;
+}
 
-    input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      background: #1e1f22;
-      border: 1px solid #2b2d31;
-      border-radius: 4px;
-      color: #dbdee1;
-      font-size: 14px;
-    }
-    input:focus {
-      outline: none;
-      border-color: #7289da;
-    }
+/* MAIN LAYOUT */
+.layout {
+  display: flex;
+  height: calc(100vh - 48px);
+}
 
-    button {
-      padding: 12px 16px;
-      background: #7289da;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #5b6eae;
-    }
+/* CHAT */
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #313338;
+}
 
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 12px;
-    }
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
 
-    .chat-container {
-      background: #2b2d31;
-      border-radius: 8px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 80vh;
-    }
+.msg {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
 
-    .chat-header {
-      padding: 12px 16px;
-      background: #313338;
-      border-bottom: 1px solid #2b2d31;
-      font-weight: 600;
-      color: #f2f3f5;
-    }
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #5865f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
 
-    #chat {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      background: #313338;
-      display: flex;
-      flex-direction: column;
-    }
+.msg-content {
+  display: flex;
+  flex-direction: column;
+}
 
-    .msg {
-      margin-bottom: 16px;
-      padding: 8px 12px;
-      background: #2b2d31;
-      border-radius: 8px;
-    }
+.name {
+  font-weight: bold;
+  color: #fff;
+}
 
-    .msg .name {
-      font-weight: 600;
-      color: #f2f3f5;
-      margin-bottom: 4px;
-    }
+.text {
+  color: #dbdee1;
+}
 
-    .msg .message-content {
-      color: #dbdee1;
-      font-size: 14px;
-      line-height: 1.4;
-      word-break: break-word;
-    }
+.time {
+  font-size: 11px;
+  color: #949ba4;
+}
 
-    .msg .meta {
-      font-size: 11px;
-      color: #949ba4;
-      margin-top: 4px;
-    }
+/* INPUT */
+.inputbar {
+  display: flex;
+  padding: 10px;
+  background: #2b2d31;
+  gap: 10px;
+}
 
-    .message-input {
-      padding: 12px;
-      background: #2b2d31;
-      display: flex;
-      gap: 8px;
-    }
+.inputbar input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: #1e1f22;
+  color: white;
+}
 
-    .message-input input {
-      flex: 1;
-      padding: 10px 12px;
-      background: #1e1f22;
-      border: none;
-      border-radius: 8px;
-      color: #dbdee1;
-      font-size: 14px;
-    }
-    .message-input input:focus {
-      outline: none;
-    }
+.inputbar button {
+  background: #5865f2;
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    .message-input button {
-      padding: 10px 14px;
-      margin: 0;
-      min-width: 80px;
-    }
+/* MEMBERS */
+.members {
+  width: 260px;
+  background: #2b2d31;
+  padding: 10px;
+  overflow-y: auto;
+  border-left: 1px solid #1e1f22;
+}
 
-    .status {
-      font-size: 12px;
-      color: #949ba4;
-      margin-top: 6px;
-    }
-    .status.connected {
-      color: #3ba55c;
-    }
-  </style>
+.member {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.member:hover {
+  background: #1e1f22;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3ba55c;
+}
+
+.member small {
+  color: #949ba4;
+  display: block;
+  font-size: 11px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="input-group">
-      <label>Channel ID</label>
-      <input id="channelId" type="text" value="1393951841238388816" placeholder="Channel ID" />
 
-      <div class="row">
-        <button onclick="startBot()">Start Bot</button>
-        <button onclick="stopBot()" id="stopBtn" style="display:none; background: #4e5058;">Stop Bot</button>
-      </div>
+<div class="topbar">
+  <div># general</div>
+  <div class="controls">
+    <button onclick="startBot()">Start</button>
+    <button onclick="stopBot()">Stop</button>
+  </div>
+</div>
 
-      <div class="status" id="status"></div>
-    </div>
+<div class="layout">
 
-    <div class="chat-container">
-      <div class="chat-header">Channel Messages</div>
-      <div id="chat"></div>
-      <div class="message-input">
-        <input id="message" type="text" placeholder="Message @channel" onkeydown="if(event.key==='Enter') sendMessage()" />
-        <button onclick="sendMessage()">Send</button>
-      </div>
+  <!-- CHAT -->
+  <div class="chat">
+    <div class="messages" id="chat"></div>
+
+    <div class="inputbar">
+      <input id="message" placeholder="Message..." />
+      <button onclick="sendMessage()">Send</button>
     </div>
   </div>
 
-  <script>
-    async function startBot() {
-      const channelId = document.getElementById('channelId').value;
-      if (!channelId) { alert('Please enter a channel ID.'); return; }
+  <!-- MEMBERS -->
+  <div class="members">
+    <input id="search" placeholder="Search members..." style="width:100%;margin-bottom:10px;padding:8px;border:none;border-radius:6px;background:#1e1f22;color:white;" />
+    <div id="members"></div>
+  </div>
 
-      const res = await fetch('/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ channelId })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        document.getElementById('status').textContent = 'Bot Running';
-        document.getElementById('status').classList.add('connected');
-        document.getElementById('stopBtn').style.display = 'inline-block';
-        loadMessages();
-      } else {
-        alert(data.error);
-      }
-    }
+</div>
 
-    async function stopBot() {
-      const res = await fetch('/stop', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const data = await res.json();
-      if (data.ok) {
-        document.getElementById('status').textContent = 'Bot Stopped';
-        document.getElementById('status').classList.remove('connected');
-        document.getElementById('stopBtn').style.display = 'none';
-      } else {
-        alert(data.error);
-      }
-    }
+<script>
 
-    async function sendMessage() {
-      const input = document.getElementById('message');
-      const message = input.value;
-      if (!message) return;
+async function startBot() {
+  await fetch('/start', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ channelId: "1393951841238388816" }) });
+  loadMessages();
+  loadMembers();
+}
 
-      const res = await fetch('/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message })
-      });
-      const data = await res.json();
-      if (!data.ok) alert(data.error);
-      input.value = '';
-    }
+async function stopBot() {
+  await fetch('/stop', { method:'POST' });
+}
 
-    async function loadMessages() {
-      const res = await fetch('/messages');
-      const data = await res.json();
-      const chat = document.getElementById('chat');
-      
-      // Only scroll if user hasn't scrolled up (preserve scroll position)
-      const wasAtBottom = chat.scrollHeight - chat.scrollTop <= chat.clientHeight + 50;
-      
-      chat.innerHTML = data.messages.map(m => \`
-        <div class="msg">
-          <div class="name">\${escapeHtml(m.author)}</div>
-          <div class="message-content">\${escapeHtml(m.content)}</div>
-          <div class="meta">\${escapeHtml(m.time)}</div>
-        </div>
-      \`).join('');
-      
-      // Only scroll to bottom if user was already at bottom
-      if (wasAtBottom) {
-        chat.scrollTop = chat.scrollHeight;
-      }
-    }
+async function sendMessage() {
+  const message = document.getElementById('message').value;
+  await fetch('/send', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ message })
+  });
+  document.getElementById('message').value = '';
+}
 
-    function escapeHtml(text) {
-      return String(text).replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',\"'\":\"&#39;\"
-      }[m]));
-    }
+async function loadMessages() {
+  const res = await fetch('/messages');
+  const data = await res.json();
 
-    setInterval(loadMessages, 2000);
-  </script>
+  const chat = document.getElementById('chat');
+  chat.innerHTML = data.messages.map(m => \`
+    <div class="msg">
+      <div class="avatar">\${m.author[0]?.toUpperCase() || "?"}</div>
+      <div class="msg-content">
+        <div class="name">\${escape(m.author)}</div>
+        <div class="text">\${escape(m.content)}</div>
+        <div class="time">\${escape(m.time)}</div>
+      </div>
+    </div>
+  \`).join('');
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function loadMembers() {
+  const res = await fetch('/members');
+  const data = await res.json();
+  if (!data.ok) return;
+
+  const search = document.getElementById('search').value.toLowerCase();
+
+  const members = data.members.filter(m =>
+    m.displayName.toLowerCase().includes(search)
+  );
+
+  document.getElementById('members').innerHTML = members.map(m => \`
+    <div class="member">
+      <div class="dot"></div>
+      <div>
+        <div>\${escape(m.displayName)}</div>
+        <small>\${m.id}</small>
+      </div>
+    </div>
+  \`).join('');
+}
+
+function escape(t) {
+  return String(t).replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[m]));
+}
+
+setInterval(loadMessages, 2000);
+setInterval(loadMembers, 5000);
+
+document.getElementById('search').addEventListener('input', loadMembers);
+
+</script>
+
 </body>
 </html>
   `);
