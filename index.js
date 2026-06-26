@@ -277,7 +277,6 @@ app.get('/', (req, res) => {
       const wasAtBottom = chat.scrollHeight - chat.scrollTop <= chat.clientHeight + 50;
       
       chat.innerHTML = data.messages.map(m => \`
-        <img class="avatar" src="${escapeHtml(m.avatar)}" />
         <div class="msg">
           <div class="name">\${escapeHtml(m.author)}</div>
           <div class="message-content">\${escapeHtml(m.content)}</div>
@@ -374,8 +373,7 @@ app.post('/start', async (req, res) => {
         author: msg.author.bot ? `[Bot] ${msg.author.username}` : msg.author.username,
         content: msg.content || '[no text]',
         time: new Date(msg.createdTimestamp).toLocaleString(),
-        messageid: msg.author.id,
-        avatar: msg.author.displayAvatarURL({ dynamic: true, size: 64 })
+        messageid: msg.author.id
       });
     }
 
