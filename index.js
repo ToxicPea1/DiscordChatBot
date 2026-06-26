@@ -156,6 +156,12 @@ app.get('/', (req, res) => {
       display: flex;
       gap: 8px;
     }
+    .msg .authorrow {
+      font-weight: 600;
+      color: #f2f3f5;
+      margin-bottom: 4px;
+    }
+    
 
     .message-input input {
       flex: 1;
@@ -271,7 +277,10 @@ app.get('/', (req, res) => {
       
       chat.innerHTML = data.messages.map(m => \`
         <div class="msg">
-          <div class="name">\${escapeHtml(m.author)}</div>
+          <div class"authorrow">
+            <div class="name">\${escapeHtml(m.author)}</div>
+            <div class="authorid">\${escapeHtml(m.authorid)}</div>
+          <div>
           <div class="message-content">\${escapeHtml(m.content)}</div>
           <div class="meta">\${escapeHtml(m.time)}</div>
           <div class="msgid">\${escapeHtml(m.messageid)}</div>
@@ -339,7 +348,8 @@ app.post('/start', async (req, res) => {
         author: msg.author.bot ? `[Bot] ${msg.author.username}` : msg.author.username,
         content: msg.content || '[no text]',
         time: new Date(msg.createdTimestamp).toLocaleString(),
-        messageid: msg.id
+        messageid: msg.id,
+        authorid: message.author.id
       });
       if (messages.length > 100) messages.shift();
     });
@@ -366,7 +376,8 @@ app.post('/start', async (req, res) => {
         author: msg.author.bot ? `[Bot] ${msg.author.username}` : msg.author.username,
         content: msg.content || '[no text]',
         time: new Date(msg.createdTimestamp).toLocaleString(),
-        messageid: msg.id
+        messageid: msg.id,
+        authorid: message.author.id
       });
     }
 
