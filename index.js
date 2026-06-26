@@ -157,6 +157,10 @@ app.get('/', (req, res) => {
       gap: 8px;
     }
     .msg .authorrow {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 4px;
       font-weight: 600;
       color: #f2f3f5;
       margin-bottom: 4px;
