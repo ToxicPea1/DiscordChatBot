@@ -131,7 +131,7 @@ app.get('/', (req, res) => {
       margin-bottom: 4px;
     }
 
-    .msg .authorid {
+    .msg .ballsag {
       font-weight: 600;
       color: #949ba4;
       margin-bottom: 4px;
@@ -288,7 +288,7 @@ app.get('/', (req, res) => {
         <div class="msg">
           <div class="authorrow">
             <div class="name">${escapeHtml(m.author || '')}</div>
-            <div class="authorid">${escapeHtml(m.authorid || '')}</div>
+            <div class="ballsag">${escapeHtml(m.authorid || '')}</div>
           </div>
           <div class="message-content">\${escapeHtml(m.content)}</div>
           <div class="meta">\${escapeHtml(m.time)}</div>
