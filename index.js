@@ -305,6 +305,9 @@ setInterval(loadMessages, 2000);
 setInterval(loadMembers, 5000);
 
 document.getElementById('search').addEventListener('input', loadMembers);
+function toggleMembers() {
+  document.querySelector('.members').classList.toggle('open');
+}
 
 </script>
 
