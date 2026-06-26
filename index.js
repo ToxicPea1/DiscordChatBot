@@ -36,16 +36,13 @@ body {
 
 /* TOP BAR */
 .topbar {
-  <div class="topbar">
-  <div># general</div>
-  <button onclick="toggleMembers()">Members</button>
-
-  <div class="controls">
-    <button onclick="toggleMembers()">Members</button>
-    <button onclick="startBot()">Start</button>
-    <button onclick="stopBot()">Stop</button>
-  </div>
-</div>
+  height: 48px;
+  background: #2b2d31;
+  border-bottom: 1px solid #1e1f22;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
 }
 
 /* MAIN LAYOUT */
