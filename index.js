@@ -288,7 +288,7 @@ app.get('/', (req, res) => {
         <div class="msg">
           <div class="authorrow">
             <div class="name">${escapeHtml(m.author || '')}</div>
-            <div class="ballsag">${escapeHtml(m.authorid || '')}</div>
+            <div class="ballsag">${escapeHtml(m.bsr || '')}</div>
           </div>
           <div class="message-content">\${escapeHtml(m.content)}</div>
           <div class="meta">\${escapeHtml(m.time)}</div>
@@ -358,7 +358,7 @@ app.post('/start', async (req, res) => {
         content: msg.content || '[no text]',
         time: new Date(msg.createdTimestamp).toLocaleString(),
         messageid: msg.id,
-        authorid: msg.author.id
+        bsr: msg.author.id
       });
       if (messages.length > 100) messages.shift();
     });
@@ -386,7 +386,7 @@ app.post('/start', async (req, res) => {
         content: msg.content || '[no text]',
         time: new Date(msg.createdTimestamp).toLocaleString(),
         messageid: msg.id,
-        authorid: msg.author.id
+        bsr: msg.author.id
       });
     }
 
