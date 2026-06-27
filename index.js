@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <title>Nigga bot Controll Panel</title>
-  <link rel="icon" type="image/png" href="/favicon2.png">
+  <link rel="icon" type="image/png" href="/faviconV2.png">
   <style>
     * {
       box-sizing: border-box;
