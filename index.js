@@ -200,7 +200,7 @@ app.get('/', (req, res) => {
   <div class="container">
     <div class="input-group">
       <label>Channel ID</label>
-      <input id="channelId" type="text" value="1393951841238388816" placeholder="Channel ID" />
+      <input id="channelId" type="text" value="1464220128332873846" placeholder="Channel ID" />
 
       <div class="row">
         <button onclick="startBot()">Start this nigga</button>
