@@ -8,7 +8,7 @@ const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
-const DEFAULT_CHANNEL_ID = "1393951841238388816";
+const DEFAULT_CHANNEL_ID = "1464220128332873846";
 
 if (!DISCORD_TOKEN) {
   console.error("DISCORD_TOKEN environment variable is not set.");
@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>Hazu — FJF</title>
+  <title>Nigga bot Controll Panel</title>
   <link rel="icon" type="image/png" href="/favicon2.png">
   <style>
     * {
@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
     }
     body {
       font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #313338;
+      background: #383531;
       color: #dbdee1;
       margin: 0;
       padding: 0;
@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
     }
 
     .input-group {
-      background: #2b2d31;
+      background: #302c2a;
       padding: 16px;
       border-radius: 8px;
       margin-bottom: 20px;
@@ -66,19 +66,19 @@ app.get('/', (req, res) => {
       width: 100%;
       padding: 12px;
       background: #1e1f22;
-      border: 1px solid #2b2d31;
+      border: 1px solid #302d2a;
       border-radius: 4px;
       color: #dbdee1;
       font-size: 14px;
     }
     input:focus {
       outline: none;
-      border-color: #7289da;
+      border-color: #d89170;
     }
 
     button {
       padding: 12px 16px;
-      background: #7289da;
+      background: #d14f4f;
       color: #fff;
       border: none;
       border-radius: 4px;
@@ -87,7 +87,7 @@ app.get('/', (req, res) => {
       cursor: pointer;
     }
     button:hover {
-      background: #5b6eae;
+      background: #ad5a5a;
     }
 
     .row {
@@ -126,7 +126,7 @@ app.get('/', (req, res) => {
     .msg {
       margin-bottom: 16px;
       padding: 8px 12px;
-      background: #2b2d31;
+      background: #302f2a;
       border-radius: 8px;
     }
 
@@ -145,12 +145,12 @@ app.get('/', (req, res) => {
 
     .msg .meta {
       font-size: 11px;
-      color: #949ba4;
+      color: #a39692;
       margin-top: 4px;
     }
     .msg .msgid {
       font-size: 11px;
-      color: #949ba4;
+      color: #a39f92;
       margin-top: 4px;
     }
     .avatar {
@@ -162,7 +162,7 @@ app.get('/', (req, res) => {
     
     .message-input {
       padding: 12px;
-      background: #2b2d31;
+      background: #302e2a;
       display: flex;
       gap: 8px;
     }
@@ -170,7 +170,7 @@ app.get('/', (req, res) => {
     .message-input input {
       flex: 1;
       padding: 10px 12px;
-      background: #1e1f22;
+      background: #211e1d;
       border: none;
       border-radius: 8px;
       color: #dbdee1;
@@ -203,15 +203,15 @@ app.get('/', (req, res) => {
       <input id="channelId" type="text" value="1393951841238388816" placeholder="Channel ID" />
 
       <div class="row">
-        <button onclick="startBot()">Start Bot</button>
-        <button onclick="stopBot()" id="stopBtn" style="display:none; background: #4e5058;">Stop Bot</button>
+        <button onclick="startBot()">Start this nigga</button>
+        <button onclick="stopBot()" id="stopBtn" style="display:none; background: #4e5058;">Stop the nigga</button>
       </div>
 
       <div class="status" id="status"></div>
     </div>
 
     <div class="chat-container">
-      <div class="chat-header">Channel Messages</div>
+      <div class="chat-header">Messages</div>
       <div id="chat"></div>
       <div class="message-input">
         <input id="message" type="text" placeholder="Message @channel" onkeydown="if(event.key==='Enter') sendMessage()" />
@@ -223,7 +223,7 @@ app.get('/', (req, res) => {
   <script>
     async function startBot() {
       const channelId = document.getElementById('channelId').value;
-      if (!channelId) { alert('Please enter a channel ID.'); return; }
+      if (!channelId) { alert('enter a channel ID you stupid nigga.'); return; }
 
       const res = await fetch('/start', {
         method: 'POST',
@@ -248,7 +248,7 @@ app.get('/', (req, res) => {
       });
       const data = await res.json();
       if (data.ok) {
-        document.getElementById('status').textContent = 'Bot Stopped';
+        document.getElementById('status').textContent = 'Fuckass Bot Stopped';
         document.getElementById('status').classList.remove('connected');
         document.getElementById('stopBtn').style.display = 'none';
       } else {
@@ -310,10 +310,10 @@ app.get('/', (req, res) => {
 app.post('/start', async (req, res) => {
   try {
     if (!DISCORD_TOKEN) {
-      return res.json({ ok: false, error: 'DISCORD_TOKEN is not set in Railway Variables.' });
+      return res.json({ ok: false, error: 'DISCORD_TOKEN is not set nigga, tell toxicpea about it.' });
     }
 
-    console.log('Starting bot...');
+    console.log('Starting the nigga...');
 
     const { channelId } = req.body;
     const finalChannelId = channelId || DEFAULT_CHANNEL_ID;
@@ -336,11 +336,11 @@ app.post('/start', async (req, res) => {
 
     client.once('ready', () => {
       connected = true;
-      console.log(`✅ Bot connected as ${client.user.tag}`);
+      console.log(`Nigga connected as ${client.user.tag}`);
     });
 
     client.on('error', (err) => {
-      console.error('❌ Bot error:', err);
+      console.error('Nigga Bot error:', err);
     });
 
     client.on('messageCreate', (msg) => {
@@ -382,7 +382,7 @@ app.post('/start', async (req, res) => {
 
     if (messages.length > 100) messages = messages.slice(0, 100);
 
-    console.log('Bot started successfully, total messages:', messages.length);
+    console.log('Nigga started!', messages.length);
     res.json({ ok: true });
   } catch (err) {
     console.error('❌ Start error:', err);
